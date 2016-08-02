@@ -68,6 +68,7 @@ import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.errors.UnmergedPathException;
 import org.eclipse.jgit.hooks.Hooks;
+import org.eclipse.jgit.ignore.FastIgnoreRule;
 import org.eclipse.jgit.internal.JGitText;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
@@ -89,6 +90,8 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.TreeWalk.OperationType;
 import org.eclipse.jgit.util.ChangeIdUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class used to execute a {@code Commit} command. It has setters for all
@@ -100,6 +103,9 @@ import org.eclipse.jgit.util.ChangeIdUtil;
  *      >Git documentation about Commit</a>
  */
 public class CommitCommand extends GitCommand<RevCommit> {
+	private final static Logger LOG = LoggerFactory
+			.getLogger(CommitCommand.class);
+
 	private PersonIdent author;
 
 	private PersonIdent committer;
@@ -220,6 +226,7 @@ public class CommitCommand extends GitCommand<RevCommit> {
 			if (!noVerify) {
 				message = Hooks.commitMsg(repo, hookOutRedirect)
 						.setCommitMessage(message).call();
+				LOG.debug("*** " + message);
 			}
 
 			// lock the index

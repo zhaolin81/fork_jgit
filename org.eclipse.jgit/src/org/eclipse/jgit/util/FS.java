@@ -102,6 +102,9 @@ public abstract class FS {
 					cygwinUsed = Boolean.valueOf(FS_Win32_Cygwin.isCygwin());
 				if (cygwinUsed.booleanValue())
 					return new FS_Win32_Cygwin();
+				else if (FS_Win32_Git.isGit()) {
+						return new FS_Win32_Git();
+					}
 				else
 					return new FS_Win32();
 			} else {
