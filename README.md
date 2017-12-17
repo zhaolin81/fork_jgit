@@ -1,5 +1,47 @@
 Java Git
 ========
+扩展jgit，默认Windows下仅支持安装了cygwin环境hook调用。  
+扩展为只要java.library.path运行路径能搜索到git.exe，就可以支持hook。  
+
+```
+/**
+ * FS implementation for Git on Windows
+ *
+ * @author zhaolin
+ */
+public class FS_Win32_Git extends FS_Win32 {
+	private static String gitpath;
+
+	/**
+	 * @return true if gitpath is found
+	 */
+	public static boolean isGit() {
+		final String path = AccessController
+				.doPrivileged(new PrivilegedAction<String>() {
+					public String run() {
+						return System.getProperty("java.library.path"); //$NON-NLS-1$
+					}
+				});
+		if (path == null)
+			return false;
+		File found = FS.searchPath(path, "git.exe"); //$NON-NLS-1$
+		if (found != null){
+			File[] binPaths = found.getParentFile().getParentFile()
+					.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return "bin".equals(name); //$NON-NLS-1$
+				}});
+			if(binPaths!=null && binPaths.length > 0){
+				gitpath = binPaths[0].getPath();
+			}
+		}
+		return gitpath != null;
+	}
+```
+
+
+
 
 An implementation of the Git version control system in pure Java.
 

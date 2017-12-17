@@ -90,8 +90,6 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.TreeWalk.OperationType;
 import org.eclipse.jgit.util.ChangeIdUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class used to execute a {@code Commit} command. It has setters for all
@@ -103,8 +101,6 @@ import org.slf4j.LoggerFactory;
  *      >Git documentation about Commit</a>
  */
 public class CommitCommand extends GitCommand<RevCommit> {
-	private final static Logger LOG = LoggerFactory
-			.getLogger(CommitCommand.class);
 
 	private PersonIdent author;
 
@@ -226,7 +222,6 @@ public class CommitCommand extends GitCommand<RevCommit> {
 			if (!noVerify) {
 				message = Hooks.commitMsg(repo, hookOutRedirect)
 						.setCommitMessage(message).call();
-				LOG.debug("*** " + message);
 			}
 
 			// lock the index
